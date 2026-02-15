@@ -1,0 +1,26 @@
+.time{
+  border:2px solid $primary;
+  border-radius: $border-radius;
+  background-color: $primary;
+  margin:0;
+
+  .button{
+    padding: 0 10px;
+    color:$font-color;
+  //  background-color: $primary;
+  }
+  .label{
+   padding: 0 10px;
+    background-color: $background-color;
+   border-top-right-radius: $border-radius;
+   border-bottom-right-radius: $border-radius;
+   color:$font-color;
+  }
+ // padding: 2px 15px;
+}
+
+.calendar{
+  border-radius: $border-radius;
+  background-color: $background-color;
+  padding: 2px 15px;
+}

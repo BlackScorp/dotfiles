@@ -1,0 +1,12 @@
+set $mod Mod4
+set $left h
+set $down j
+set $up k
+set $right l
+set $term foot
+set $menu wofi --show drun
+set $file pcmanfm
+set $screenshotLocation ~/Bilder/screenshot_$(date +%F_%T).png
+set $print grim $screenshotLocation
+set $printSelect  grim -g "$(slurp)" $screenshotLocation
+set $scriptsDir ~/.config/sway/scripts

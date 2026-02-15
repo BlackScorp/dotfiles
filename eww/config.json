@@ -1,0 +1,26 @@
+{
+    "bar":{
+        "anchor":"top center",
+        "left":[
+            {
+                "widget":"workspaces"
+            }
+        ],
+        "center":[
+            {
+                "widget":"time"
+            }
+        ],
+        "right":[
+            {
+                "widget":"bluetooth"
+            },
+            {
+                "widget":"battery"
+            },
+            {
+                "widget":"shutdown"
+            }
+        ]
+    }
+}

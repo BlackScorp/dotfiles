@@ -1,0 +1,8 @@
+include ./variables
+include ./configs/*
+
+swaybg_command -
+floating_modifier $mod normal
+focus_follows_mouse yes
+mouse_warping none
+workspace_auto_back_and_forth yes

@@ -1,0 +1,18 @@
+
+;asd🔊🔋📶🔈🔔📅🔌🗙⏻⏼⏵⏹⏸⏩⏪♫✉🔁🔀🔄
+;🔒🔕🔔🔋🔊🔉🔇🔈🔄🚫🗙🔑🔥
+
+
+(defwindow bar []
+  :monitor 0
+  :exclusive true
+  :stacking "fg"
+  :windowtype "dock"
+  :geometry (geometry :x "0"
+                      :y "0"
+                      :width "100%"
+                      :anchor "top center")
+  (centerbox :orientation "h"
+    (left)
+    (center)
+    (right)))

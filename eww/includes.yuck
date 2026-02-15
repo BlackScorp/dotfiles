@@ -1,0 +1,10 @@
+(include "./window/bar.yuck")
+(include "./window/bluetooth.yuck")
+(include "./window/powermenu.yuck")
+
+(include "./widgets/workspaces.yuck")
+(include "./widgets/time.yuck")
+(include "./widgets/bluetooth.yuck")
+(include "./widgets/network.yuck")
+(include "./widgets/powermenu.yuck")
+(include "./widgets/battery.yuck")

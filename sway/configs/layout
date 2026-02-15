@@ -1,0 +1,31 @@
+default_border pixel 3
+default_floating_border pixel 3
+
+client.focused          #89b4fa #89b4fa #cdd6f4 #89b4fa #89b4fa
+client.focused_inactive #313244 #313244 #cdd6f4 #313244 #313244
+client.unfocused        #181825 #181825 #cdd6f4 #181825 #181825
+client.urgent           #f38ba8 #f38ba8 #cdd6f4 #f38ba8 #f38ba8
+
+corner_radius 2
+#smart_corners on
+ 
+# Fenster-Schatten
+#shadows on
+#shadow_blur_radius 20
+#shadow_color #00000080
+#shadow_offset 0 5
+
+# Transparenz global aktivieren
+#opacity 1.0
+# Hintergrund-Blur (SwayFX)
+#blur enable
+#blur_xray enable
+# blur_radius 8
+
+gaps inner 5
+
+# Außenabstand zum Bildschirmrand
+gaps top 5
+gaps left 5
+gaps right 5
+gaps bottom 5

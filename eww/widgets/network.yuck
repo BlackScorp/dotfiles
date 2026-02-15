@@ -1,0 +1,4 @@
+
+(defwidget network []
+(button :class "network" "📶")
+)

@@ -1,0 +1,9 @@
+
+(defwidget bluetooth []
+    (eventbox
+      :onclick  "eww open bluetooth"
+      :cursor "pointer"
+        (label :justify "center" :text "")
+    )
+)
+

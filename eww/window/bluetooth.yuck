@@ -1,0 +1,45 @@
+(defpoll bluetooth_json :initial "[]" :interval "1s"
+"./scripts/bluetooth.sh")
+
+
+(defwindow bluetooth  []
+  :monitor 0
+  :geometry
+  (geometry
+    :width "100%" :height "100%"
+  )
+  :stacking "overlay"
+  :focused true
+  :exclusive false
+  (overlay
+    (eventbox :onclick "eww close bluetooth")
+    (box :width 400 :height 400 :halign "center" :valign "center"
+      (overlay
+        (box :class "popup-background")
+        (bt-menu)
+      )
+    )
+  )
+)
+
+(defwidget bt-menu []
+  (box 
+  
+  
+  )
+)
+
+(defvar show-bluetooth false)
+
+
+
+
+
+
+(defwidget bt-device [device]
+  (box :space-evenly false :halign "fill" :class "device" :orientation "h"
+    (button :onclick "bluetoothctl --agent auto --timeout 10 pair ${device.address}"
+      (label :class "label" :text {device.name})
+    )
+  )
+)

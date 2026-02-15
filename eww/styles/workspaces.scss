@@ -1,0 +1,23 @@
+
+.workspaces {
+  border:$border-size solid $primary;
+  background-color: $background-color;
+  border-radius: $border-radius;
+  margin-left: 10px;
+  .workspace {
+    padding: 0px 15px;
+    
+    .number{
+     // color:$font-color;
+     // font-size: 1em;
+     // font-weight: bold;
+    }
+    
+    &.active {
+     // color: #4e4e4e;
+      background-color: $primary;
+      //border-radius: $border-radius;
+      padding:0px 20px;
+    }
+  }
+}

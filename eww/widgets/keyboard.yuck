@@ -1,0 +1,3 @@
+(defwidget keyboard []
+  (button :class "keyboard" :onclick "poweroff" (label :text "⏻")
+))
