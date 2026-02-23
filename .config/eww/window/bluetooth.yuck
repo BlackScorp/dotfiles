@@ -1,0 +1,96 @@
+(defvar bluetooth_opened false)
+  
+(defpoll bluetooth_status :initial "[]" :interval "1s" :run-while bluetooth_opened
+"./scripts/bluetooth.sh info" )
+
+(defvar scanning false)
+
+
+(defwindow bluetooth  []
+  :monitor 0
+  :geometry
+  (geometry
+    :width "100%" :height "100%"
+  )
+  :stacking "overlay"
+  :focused true
+  :exclusive false
+  (overlay
+    (eventbox :onclick "eww close bluetooth" :cursor "pointer")
+    
+    (box :width 400
+      :height 400
+      :halign "center" :valign "center"
+      (overlay
+        (box :class "popup-background")
+        (bt-menu)
+      )
+    )
+    
+  )
+)
+
+
+(defwidget bt-menu []
+  (box
+    :class "bt-menu"
+    :space-evenly false
+    :orientation "v"
+    
+    (box
+      :class "header"
+      :orientation "h"
+      :halign "fill"
+      
+      (label :halign "start" :text {bluetooth_status.name})
+      
+      (box :class "actions" :halign "end" :space-evenly false
+        
+        (eventbox :cursor "pointer" :onclick "bluetoothctl power ${bluetooth_status.powered? 'off':'on'}"
+          (toggle :toggled {bluetooth_status.powered})
+          
+        )
+        (eventbox :cursor "pointer" :onclick "bluetoothctl --timeout 20 scan on"
+          (label :class "action" :text "")
+        )
+      )
+    )
+    
+    (box :class "devices"
+    :orientation "v"
+      (for device in {bluetooth_status.devices}
+        (bt-device :device device)
+      )
+    
+    )
+    
+  )
+)
+
+
+
+
+
+
+(defwidget bt-device [device]
+  (box
+    :halign "fill"
+    :class "device"
+    :orientation "h"
+    (box :class "label" :halign "start" :space-evenly false
+      (image :class "icon" :icon {device.icon})
+      (label :class "name" :text {device.name})
+    )
+    (box :class "actions" :halign "end"
+      (eventbox :halign "end" :visible {device.status != 'connected'} :cursor "pointer" :onclick "./scripts/bluetooth.sh connect ${device.id}"
+        (label :class "action" :text "󰂱")
+      )
+      (eventbox :halign "end" :visible {device.status == 'connected'} :cursor "pointer" :onclick "./scripts/bluetooth.sh disconnect ${device.id}"
+        (label :class "action" :text "󰂲")
+      )
+      (eventbox :halign "end" :visible {device.paired == 'yes'} :cursor "pointer" :onclick "./scripts/bluetooth.sh remove ${device.id}"
+        (label :class "action" :text "")
+      )
+    )
+  )
+)

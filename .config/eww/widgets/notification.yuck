@@ -1,0 +1,11 @@
+
+(defwidget notification []
+  (box :class "widget notification"
+    (eventbox
+      :onclick  ""
+      :cursor "pointer"
+      (label :class "icon" :justify "center" :text "󰂚")
+    )
+  )
+  
+)

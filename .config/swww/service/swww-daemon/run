@@ -1,0 +1,2 @@
+#!/bin/sh
+exec chpst -e "$TURNSTILE_ENV_DIR" swww-daemon 2>&1

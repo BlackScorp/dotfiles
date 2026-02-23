@@ -1,0 +1,23 @@
+.bt-menu {
+  background-color: $background;
+  padding: 10px;
+  margin: 10px;
+  border-radius: $border-radius;
+  .header{
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: $border;
+  }
+  .actions .action{
+    border:  $border;
+    padding: 4px 8px;
+    border-radius: $border-radius;
+    margin-left: 5px;
+  }
+  .device{
+    .icon{
+      margin-right: 10px;
+    }
+    margin-bottom: 10px;
+  }
+}

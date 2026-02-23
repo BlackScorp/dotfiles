@@ -1,0 +1,19 @@
+(defpoll time :interval "5s"
+"date '+%H:%M'")
+
+(defwidget time []
+  
+  (box  :class "widget time"
+    (eventbox
+      :onclick  "eww open calendar"
+      :cursor "pointer"
+      (box :class "icon-text" :space-evenly false
+        (label :class "icon" :text "")
+        (label :class "text" :text {time})
+      )
+    )
+  )
+)
+
+
+

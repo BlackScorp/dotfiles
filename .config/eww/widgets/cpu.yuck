@@ -1,0 +1,14 @@
+
+
+(defwidget cpu []
+  (box :class "widget cpu"
+    (eventbox
+      :onclick  ""
+      :cursor "pointer"
+      (box :class "icon-text" :space-evenly false
+        (label :class "icon" :justify "center" :text "")
+        (label :class "text" :text "${round(EWW_CPU.avg,1)}%")
+      )
+    )
+  )
+)

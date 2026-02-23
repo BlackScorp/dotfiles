@@ -1,0 +1,46 @@
+
+
+(defpoll workspaces :initial `[]` :interval "0.5s" "./scripts/workspaces.sh")
+
+
+(defwidget workspaces []
+  (box :class "workspaces"
+    :orientation "h"
+    :space-evenly false
+    
+    
+    (for ws in workspaces
+      ;   (button  :onclick "swaymsg workspace ${ws.name}"
+        ;    :class "workspace ${ws.focused ? 'active': ''}"
+        ;   (overlay
+          ;  (image :class "icon" :path {ws.icon} :image-height "28")
+          ;    (label :class "number" :text {ws.name})
+        ; )
+        (workspace :name {ws.name} :focused {ws.focused})
+      )
+    ;)
+  )
+)
+
+(defwidget workspace [name focused]
+  
+  (eventbox
+    
+    :onclick  "./scripts/switch.sh ${name}"
+    :cursor "pointer"
+    
+    (box :class "workspace ${focused ? 'active': ''}"
+      (overlay
+        ;(image :icon "mmsg -g -c | awk 'NR==2{print $3}'")
+       ; (image :icon "foot")
+        (label :justify "center" :text {name})
+      )
+    )
+    ;(image :icon "bluetooth-symbolic" :icon-size 28)
+    ;(image  :fill-svg "000000" :image-height 28 :path "./assets/bluetooth-b-brands-solid-full.svg")
+    
+  )
+)
+
+
+

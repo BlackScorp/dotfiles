@@ -1,0 +1,18 @@
+
+(defpoll ram_usage :interval "5s"
+"free -h -L | awk '{print $6}'")
+
+(defwidget ram []
+  (box :class "widget ram"
+    (eventbox
+      :onclick  ""
+      :cursor "pointer"
+      (box :class "icon-text" :space-evenly false
+        (label :class "icon" :justify "center" :text "")
+         (label :class "text" :text {ram_usage})
+       ; (progress  :value {EWW_RAM.used_mem_perc} :orientation "h" )
+      ;  (scale :value {EWW_RAM.used_mem_perc} :round-digits 1 :max 100.0 :min 0.0 :orientation "v")
+      )
+    )
+  )
+)

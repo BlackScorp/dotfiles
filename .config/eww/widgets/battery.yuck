@@ -1,0 +1,24 @@
+
+
+(defpoll battery_status :interval "1s"
+"./scripts/battery-status.sh")
+
+(defvar battery_critical_threshold 20)
+
+(defvar battery_animation true)
+
+
+(defwidget battery []
+  (box :class "widget battery ${battery_status['BAT0'].status}"
+    (eventbox
+      :onclick  ""
+      :cursor "pointer"
+      (box :class "icon-text" :space-evenly false
+        (label :class "icon" :text {battery_status['BAT0'].icon})
+        (label :class "text" :text "${battery_status['BAT0'].capacity}%")
+      )
+      
+    )
+  )
+  
+)

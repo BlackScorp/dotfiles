@@ -1,0 +1,6 @@
+(defwidget toggle [toggled ?class]
+  (box :class "toggle  ${toggled? 'on':'off' } ${class}"
+    (label :visible {toggled == true} :text "")
+    (label :visible {toggled == false} :text "")
+  )
+)

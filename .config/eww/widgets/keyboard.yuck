@@ -1,0 +1,13 @@
+
+(defpoll keyboard_layout :interval "60s"
+"./scripts/keyboard.sh")
+
+(defwidget keyboard []
+    (box :class "widget keyboard"
+    (eventbox
+      :onclick  "eww open bluetooth"
+      :cursor "pointer"
+      (label :class "icon" :justify "center" :text {keyboard_layout})
+    )
+  )
+)

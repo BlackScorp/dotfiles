@@ -1,0 +1,4 @@
+#!/bin/sh
+if ps -eo pid,cmd | grep "[p]ipewire" | grep -v "pulse" | grep -v "runsv" >/dev/null 2>/dev/null
+
+

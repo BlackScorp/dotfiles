@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if ! ps aux | grep -q "[s]www-daemon"; then
+    exit 0
+fi
+
+[ -r ./conf ] && . ./conf
+
+RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \) | shuf -n 1)
+
+
+swww img -t "$TRANSITION_TYPE" -a "$RANDOM_WALLPAPER"
+swww clear-cache
+
+
+echo $RANDOM_WALLPAPER > "$TIME_FILE"
+
+snooze -H'*' -M'*' -S'*' -t "$TIME_FILE" -T $INTERVAL

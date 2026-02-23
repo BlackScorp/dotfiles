@@ -1,0 +1,11 @@
+(defwidget sound []
+  (box :class "widget sound"
+    (eventbox
+      :onclick  "eww open powermenu"
+      :cursor "pointer"
+      
+      (label :class "icon" :justify "center" :text "")
+  
+    )
+  )
+)

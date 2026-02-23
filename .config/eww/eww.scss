@@ -1,0 +1,42 @@
+
+
+@import './styles/colors/nanosecond.scss';
+
+* {
+  all: unset; // Unsets everything so you can style everything from scratch
+  // font-family: "JetBrains Mono", monospace;
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+}
+
+$primary: $color_04;
+
+$border-radius: 5px;
+$border-size: 2px;
+$border-style: solid;
+$shadow-color:#060505;
+$shadow-size:5px;
+$shadow: 0px 0px $shadow-size $shadow-color;
+$border: $border-size $border-style $primary;
+
+
+.bar {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  margin-left:10px;
+  margin-right:10px;
+  color: $foreground;
+}
+
+.popup-background {
+  border:1px solid $primary;
+  background-color: $background;
+  opacity: 0.7;
+  box-shadow: $shadow;
+  border-radius: $border-radius;
+}
+
+
+@import './styles/themes/islands.scss';
+@import './styles/bluetooth.scss';

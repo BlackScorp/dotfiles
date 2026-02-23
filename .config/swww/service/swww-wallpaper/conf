@@ -1,0 +1,6 @@
+# -*- mode: sh; -*-
+
+WALLPAPER_DIR="${WALLPAPER_DIR:-$HOME/Wallpapers}"
+TIME_FILE="${TIME_FILE:-$HOME/.cache/background}"
+INTERVAL="${SWWW_INTERVAL:-10m}"
+TRANSITION_TYPE="${SWWW_TRANSITION:-random}"

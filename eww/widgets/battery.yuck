@@ -1,6 +1,0 @@
-(defwidget battery []
-(box :space-evenly false :class "battery ${EWW_BATTERY['BAT0'].status}"
-(label :class "icon" :text "🔋")
-(label :class "text" :text "${EWW_BATTERY['BAT0'].capacity}%")
-)
-)

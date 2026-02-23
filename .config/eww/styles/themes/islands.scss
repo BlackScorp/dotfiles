@@ -1,0 +1,135 @@
+$icon-spacing: 10px;
+$text-spacing: 2px 6px;
+
+.left>box {
+  margin-right: $icon-spacing;
+
+  &.systray {
+    margin: 0;
+
+    image {
+      margin-right: $icon-spacing;
+    }
+  }
+
+
+}
+
+.right>box {
+  margin-left: $icon-spacing;
+
+  &.systray {
+    margin: 0;
+
+    image {
+      margin-left: $icon-spacing;
+    }
+  }
+
+}
+
+.right,
+.center,
+.left {
+  &>box {
+    border: $border;
+    border-radius: $border-radius;
+    background: $background;
+
+    .icon {
+      padding: $text-spacing;
+    }
+  }
+
+  &>box.systray {
+    margin: 0;
+    border: 0;
+    background: none;
+
+
+    image {
+
+      padding: 4px;
+      background: $background;
+      border: $border;
+      border-radius: $border-radius;
+    }
+
+    menu {
+      background: $background;
+      border: $border;
+      border-radius: $border-radius;
+
+      menuitem {
+        padding: 4px 8px;
+        margin: $border-size;
+      }
+
+      menuitem:hover {
+        background-color: $color_09;
+      }
+
+      separator {
+        border-top: $border;
+      }
+    }
+  }
+
+  &>box.powermenu {
+    background-color: $color_02;
+    border: 0;
+    color: $foreground;
+  }
+
+  &>box.battery.Critical {
+    border-color: $color_02;
+
+    .icon {
+      background: $color_02;
+      color: $foreground;
+    }
+  }
+
+  &>box .icon-text {
+    .icon {
+      background: $primary;
+      padding: $text-spacing;
+      color: $background;
+    }
+
+    .text {
+      padding: $text-spacing;
+    }
+
+  }
+
+  &>box.workspaces {
+    .workspace {
+      padding-left: 10px;
+      padding-right: 10px;
+
+      &.active {
+        padding-left: 15px;
+        padding-right: 15px;
+        background-color: $primary;
+        color: $background;
+      }
+    }
+  }
+
+  &>box progressbar {
+
+    //max-width: 10px;
+    //max-height: 30px;
+  }
+}
+
+.toggle {
+  color: $primary;
+  padding: $text-spacing;
+
+  label {
+    font-size: 1.5em;
+  }
+
+}

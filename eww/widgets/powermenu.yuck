@@ -1,8 +1,0 @@
-(defwidget powermenu []
-  (eventbox
-    :onclick  "eww open powermenu"
-    :cursor "pointer"
-    (label :justify "center" :text "⏻")
-  )
-  
-)
