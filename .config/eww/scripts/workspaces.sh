@@ -1,4 +1,4 @@
 #!/bin/sh
 
 
-exec "./scripts/mango/workspaces.sh"
+exec "./scripts/$XDG_CURRENT_DESKTOP/workspaces.sh"

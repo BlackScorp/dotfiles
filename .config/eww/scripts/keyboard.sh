@@ -1,4 +1,4 @@
 #!/bin/sh
 
 
-exec "./scripts/mango/keyboard.sh"
+exec "./scripts/$XDG_CURRENT_DESKTOP/keyboard.sh"

@@ -4,7 +4,13 @@
     (eventbox
       :onclick  ""
       :cursor "pointer"
-      (label :class "icon" :justify "center" :text "")
+      
+     ; (box :class "icon-text" :space-evenly false
+        (label :class "icon" :justify "center" :text "")
+      ;  (label :class "text" :text "${EWW_NET['wlp3s0'].NET_DOWN}/${EWW_NET['wlp3s0'].NET_UP}")
+        ; (progress  :value {EWW_RAM.used_mem_perc} :orientation "h" )
+        ;  (scale :value {EWW_RAM.used_mem_perc} :round-digits 1 :max 100.0 :min 0.0 :orientation "v")
+      ;)
     )
   )
   

@@ -75,25 +75,26 @@ bluetooth_connect() {
         echo "Usage: $0 connect <device-id>"
         exit 1
     fi
-    
+    bluetoothctl --timeout 60 agent on &
+
     info=$(bluetoothctl info "$id")
  
     paired=$(echo "$info" | awk '/Paired:/ {print $2}')
     trusted=$(echo "$info" | awk '/Trusted:/ {print $2}')
 
-    # Pair if not paired
+ 
     if [[ "$paired" != "yes" ]]; then
         echo "Pairing $id..."
         bluetoothctl pair "$id"
     fi
 
-    # Trust if not trusted
+
     if [[ "$trusted" != "yes" ]]; then
         echo "Trusting $id..."
         bluetoothctl trust "$id"
     fi
 
-    # Connect
+
     echo "Connecting $id..."
     bluetoothctl connect "$id"
 }

@@ -2,4 +2,4 @@
 
 TARGET="$1"
 
-exec "./scripts/mango/switch.sh" "$TARGET"
+exec "./scripts/$XDG_CURRENT_DESKTOP/switch.sh" "$TARGET"

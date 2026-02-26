@@ -1,8 +1,6 @@
 #!/bin/sh
 
-if ! ps aux | grep -q "[s]www-daemon"; then
-    exit 0
-fi
+sleep 2
 
 [ -r ./conf ] && . ./conf
 
