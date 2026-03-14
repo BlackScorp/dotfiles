@@ -13,7 +13,7 @@
                       :width "100%"
                     
                       :anchor "top center")
-  (centerbox :orientation "h" :halign "fill" :space-evenly false
+  (centerbox :orientation "h" :halign "fill"
     (left)
     (center)
     (right)))

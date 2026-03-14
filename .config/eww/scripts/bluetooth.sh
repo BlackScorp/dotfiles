@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
+
+trap 'eww update loading=false' EXIT
 
 bluetooth_info() {
     local raw
     raw="$(bluetoothctl show)"
-
+    time="$(date +%H:%m:%S)"
     controller=$(echo "$raw" | awk '/^Controller/ {print $2}')
     name=$(echo "$raw" | awk -F': ' '/Name:/ {print $2; exit}')
     alias=$(echo "$raw" | awk -F': ' '/Alias:/ {print $2; exit}')
@@ -63,6 +65,7 @@ bluetooth_info() {
   "discovering": $discovering,
   "discoverable": $discoverable,
   "pairable": $pairable,
+  "time": "$time",
   "devices": $devices_json
 }
 EOF
@@ -75,6 +78,9 @@ bluetooth_connect() {
         echo "Usage: $0 connect <device-id>"
         exit 1
     fi
+
+    eww update loading=true
+
     bluetoothctl --timeout 60 agent on &
 
     info=$(bluetoothctl info "$id")
@@ -97,6 +103,7 @@ bluetooth_connect() {
 
     echo "Connecting $id..."
     bluetoothctl connect "$id"
+  
 }
 
 bluetooth_disconnect() {
@@ -105,10 +112,11 @@ bluetooth_disconnect() {
         echo "Usage: $0 disconnect <device-id>"
         exit 1
     fi
+    eww update loading=true
 
     echo "Disconnecting $id..."
     bluetoothctl disconnect "$id"
-
+    
 }
 
 bluetooth_remove() {
@@ -117,6 +125,7 @@ bluetooth_remove() {
         echo "Usage: $0 remove <device-id>"
         exit 1
     fi
+    eww update loading=true
 
     echo "Disconnecting $id..."
     bluetoothctl remove "$id"

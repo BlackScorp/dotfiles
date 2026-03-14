@@ -1,6 +1,6 @@
 
 
-(defpoll battery_status :interval "1s"
+(defpoll battery_status :interval "1s" :initial '{"BAT0":{"status":"unkown","icon":"","capacity":"0"}}'
 "./scripts/battery-status.sh")
 
 (defvar battery_critical_threshold 20)

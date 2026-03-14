@@ -38,14 +38,14 @@
     (box :orientation "v"
       (box :orientation "h"
         (eventbox
-          :onclick  "reboot"
+          :onclick  "loginctl reboot"
           :cursor "pointer"
           (label :class "action" :justify "center" :text "󰜉")
         )
       )
       (box :orientation "h"
         (eventbox
-          :onclick  "poweroff"
+          :onclick  "loginctl poweroff"
           :cursor "pointer"
           (label :class "action" :justify "center" :text "")
         )

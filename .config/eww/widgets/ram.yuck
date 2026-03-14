@@ -5,7 +5,7 @@
 (defwidget ram []
   (box :class "widget ram"
     (eventbox
-      :onclick  ""
+      :onclick  "sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'"
       :cursor "pointer"
       (box :class "icon-text" :space-evenly false
         (label :class "icon" :justify "center" :text "")

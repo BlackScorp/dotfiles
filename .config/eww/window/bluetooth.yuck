@@ -1,9 +1,8 @@
-(defvar bluetooth_opened false)
-  
-(defpoll bluetooth_status :initial "[]" :interval "1s" :run-while bluetooth_opened
+
+(defpoll bluetooth_status :initial "[]" :interval "1s"
 "./scripts/bluetooth.sh info" )
 
-(defvar scanning false)
+(defvar loading false)
 
 
 (defwindow bluetooth  []
@@ -16,7 +15,7 @@
   :focused true
   :exclusive false
   (overlay
-    (eventbox :onclick "eww close bluetooth" :cursor "pointer")
+    (eventbox :onclick "eww close bluetooth" :cursor "${loading ? 'wait':'default'}")
     
     (box :width 400
       :height 400
@@ -51,7 +50,7 @@
           
         )
         (eventbox :cursor "pointer" :onclick "bluetoothctl --timeout 20 scan on"
-          (label :class "action" :text "")
+          (label :class "action" :text "")
         )
       )
     )
