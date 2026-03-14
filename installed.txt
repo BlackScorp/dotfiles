@@ -61,7 +61,6 @@ pcmanfm-1.4.0_1
 pipewire-1.4.9_1
 polkit-gnome-0.105_8
 qt6-wayland-6.10.2_1
-quickshell-0.2.1_4
 rofi-2.0.0_1
 seatd-0.9.3_1
 slurp-1.5.0_1
@@ -84,7 +83,6 @@ void-repo-multilib-nonfree-6_4
 void-repo-nonfree-9_6
 vscode-1.100.3_1
 wayland-protocols-1.47_1
-weechat-4.8.2_3
 wget-1.25.0_1
 wireplumber-0.5.12_1
 wireplumber-elogind-0.5.12_1
@@ -96,4 +94,3 @@ xwayland-satellite-0.8.1_1
 yt-dlp-2026.03.03_1
 zramen-1.0.1_1
 zsh-5.9_5
-zstd-1.5.7_1
