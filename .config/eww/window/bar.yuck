@@ -7,7 +7,7 @@
   :monitor 0
   :exclusive true
   :stacking "fg"
- ; :windowtype "docnk"
+  :windowtype "dock"
   :geometry (geometry :x "0"
                       :y "0"
                       :width "100%"

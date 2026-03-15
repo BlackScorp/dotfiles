@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec chpst -e "$TURNSTILE_ENV_DIR" ./update-background 2>&1

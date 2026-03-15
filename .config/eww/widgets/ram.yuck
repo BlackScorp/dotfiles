@@ -8,8 +8,9 @@
       :onclick  "sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'"
       :cursor "pointer"
       (box :class "icon-text" :space-evenly false
-        (label :class "icon" :justify "center" :text "")
+        (label :class "icon" :justify "center" :text "󰍛")
          (label :class "text" :text {ram_usage})
+         
        ; (progress  :value {EWW_RAM.used_mem_perc} :orientation "h" )
       ;  (scale :value {EWW_RAM.used_mem_perc} :round-digits 1 :max 100.0 :min 0.0 :orientation "v")
       )

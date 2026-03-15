@@ -1,0 +1,30 @@
+#!/bin/sh
+
+
+[ -r ./conf ] && . ./conf
+
+echo $TIME_FILE
+echo $TRANSITION_TYPE
+echo $INTERVAL
+set_wallpaper() {
+    RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \) | shuf -n 1)
+    swww img -t "$TRANSITION_TYPE" -a "$RANDOM_WALLPAPER"
+    swww clear-cache
+    echo "$RANDOM_WALLPAPER" > "$TIME_FILE"
+}
+
+set_wallpaper
+
+while true; do
+        LAST_MOD=$(stat -c %Y "$TIME_FILE")
+        NOW=$(date +%s)
+        ELAPSED=$(( NOW - LAST_MOD ))
+
+       
+        if [ "$ELAPSED" -ge "$INTERVAL" ]; then
+            set_wallpaper
+        fi
+    
+  
+    sleep 10
+done
