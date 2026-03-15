@@ -8,6 +8,7 @@ alias music-on='mpv --playlist=~/Musik/coding.txt'
 alias docker-up='sudo sv start docker'
 alias docker-down='sudo sv stop docker'
 alias cc="sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'"
+alias update="sudo xbps-install -Su"
 alias open='xdg-open'
 alias ll='ls -la'
 if command -v tmux >/dev/null 2>&1; then
