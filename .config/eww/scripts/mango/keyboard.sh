@@ -1,4 +1,3 @@
 #!/bin/sh
 
-
-mmsg -g -k | awk '{print $3}'
+mmsg get keyboardlayout | jq -r '.layout'

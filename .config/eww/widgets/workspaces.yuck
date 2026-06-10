@@ -16,13 +16,13 @@
           ;  (image :class "icon" :path {ws.icon} :image-height "28")
           ;    (label :class "number" :text {ws.name})
         ; )
-        (workspace :name {ws.name} :focused {ws.focused})
+        (workspace :name {ws.name} :focused {ws.focused} :appid {ws.appid})
       )
     ;)
   )
 )
 
-(defwidget workspace [name focused]
+(defwidget workspace [name focused appid]
   
   (eventbox
     
@@ -32,7 +32,7 @@
     (box :class "workspace ${focused ? 'active': ''}"
       (overlay
         ;(image :icon "mmsg -g -c | awk 'NR==2{print $3}'")
-       ; (image :icon "foot")
+        (image :icon "${appid}")
         (label :justify "center" :text {name})
       )
     )

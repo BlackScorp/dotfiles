@@ -1,14 +1,26 @@
 #!/bin/sh
 
+tags="$(mmsg get all-tags)"
+clients="$(mmsg get all-clients)"
 
-mmsg -g -t | awk '
-BEGIN { printf "["; first=1 }
+jq -n \
+  --argjson tags "$tags" \
+  --argjson clients "$clients" '
+[
+  $tags.all_tags[].tags[]
+  | select(.client_count > 0)
+  | . as $tag
 
-$2=="tag" && ($5>0 || $4>0) {
-    if (!first) printf ","
-    first=0
-    printf "{\"name\":%s,\"focused\":%s}", $3, ($4==1?"true":"false")
-}
+  | (
+      $clients.clients[]
+      | select(.tags[] == $tag.index)
+    ) as $client
 
-END { print "]" }
+  | {
+      name: ($tag.index | tostring),
+      focused: $tag.is_active,
+      appid: ($client.appid | ascii_downcase),
+      title: $client.title
+    }
+]
 '
