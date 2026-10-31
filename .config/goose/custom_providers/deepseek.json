@@ -1,0 +1,27 @@
+{
+  "name": "custom_deepseek",
+  "engine": "openai",
+  "display_name": "DeepSeek",
+  "description": "DeepSeek chat models with thinking mode disabled by default",
+  "api_key_env": "DEEPSEEK_API_KEY",
+  "base_url": "https://api.deepseek.com",
+  "models": [
+    {
+      "name": "deepseek-flash",
+      "context_limit": 1000000,
+      "request_params": {
+        "thinking": { "type": "disabled" }
+      }
+    },
+    {
+      "name": "deepseek-v4-pro",
+      "context_limit": 128000,
+      "request_params": {
+        "thinking": { "type": "disabled" }
+      }
+    }
+  ],
+  "preserves_thinking": true,
+  "supports_streaming": true,
+  "requires_auth": true
+}

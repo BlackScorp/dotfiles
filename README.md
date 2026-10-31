@@ -52,6 +52,7 @@ nicht Teil des Repos.
 | `.config/service`, `.config/service-env` | turnstile-Dienste; Laufzeitdaten sind ignoriert |
 | `.config/AGENTS.md` | globale Agent-Regeln (Crush, Claude Code, Codex) |
 | `.config/goose` | Goose: aktiver Provider, Modelle, Extensions, eigener System-Prompt |
+| `.config/crush` | Crush: `crush.json` (Provider, Modelle, Permissions, globale Agent-Regeln) |
 | `.config/keepassxc` | KeepassXC GUI- und Browser-Einstellungen (ohne KeeShare-Key) |
 | `.local/state/noctalia/settings.toml` | Noctalia-Shell: Bar, Widgets, Farben, Wallpaper-Pfade, Plugins |
 
@@ -106,6 +107,7 @@ Nichts Geheimes gehört ins Repo. Die einzelnen Stellen:
 | --- | --- | --- |
 | Shell | `~/.secrets` (chmod 600), gesourct von `.zshrc` und `.profile` | API-Keys wie `DEEPSEEK_API_KEY` |
 | Goose | OS-Keyring, `~/.config/goose/secrets.yaml` | `config.yaml` enthält nur Provider, Modelle, Hosts; OAuth-Token liegen in `chatgpt_codex/`, `*_oauth/` und sind ignoriert |
+| Crush | `~/.secrets` (`DEEPSEEK_API_KEY`) | `crush.json` referenziert den Key nur als `$DEEPSEEK_API_KEY`; Sessions und Shell-Output liegen in `~/.crush/` (ignoriert) |
 | KeepassXC | `~/.config/keepassxc/keepassxc.ini` wird versioniert, aber **ohne** KeeShare-Block | KeepassXC kann keine Werte aus externen Dateien beziehen, der `Own`-PrivateKey muss also in der Datei stehen oder die Datei bleibt draußen |
 | KeepassXC-Datenbank | `~/.passwords.kdbx` | Nicht im Repo, separat übertragen |
 
@@ -120,7 +122,8 @@ Freigabe-Funktion bewusst nutzen.
 
 Die gemeinsamen Regeln für Agenten (Crush, Claude Code, Codex) liegen unter
 `.config/AGENTS.md` und werden nach `~/.config/AGENTS.md` verlinkt. Crush liest
-diesen Pfad über `options.global_context_paths` in allen Projekten. Die Regeln
+diesen Pfad über `options.global_context_paths` (gesetzt in
+`.config/crush/crush.json`) in allen Projekten. Die Regeln
 halten den Kontext klein: erst mit `grep` suchen, `view` mit `limit` und
 `offset` lesen und vollständige Dateien nur bei Bedarf laden.
 

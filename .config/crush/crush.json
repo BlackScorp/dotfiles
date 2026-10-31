@@ -1,0 +1,177 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "lsp": {},
+  "mcp": {},
+  "options": {
+    "attribution": {
+      "generated_with": false,
+      "trailer_style": "none"
+    },
+    "debug": true,
+    "debug_lsp": true,
+    "disable_auto_summarize": true,
+    "disable_metrics": true,
+    "disabled_tools": [
+      "lsp_call_hierarchy",
+      "lsp_definition",
+      "lsp_diagnostics",
+      "lsp_references",
+      "lsp_rename",
+      "lsp_replace_symbol",
+      "lsp_restart",
+      "lsp_symbols",
+      "crush_info",
+      "crush_logs"
+    ],
+    "global_context_paths": [
+      "~/.config/AGENTS.md"
+    ]
+  },
+  "permissions": {
+    "allowed_tools": [
+      "view",
+      "write",
+      "ls",
+      "grep",
+      "multiedit",
+      "edit",
+      "find",
+      "bash",
+      "agentic_fetch",
+      "lsp_diagnocstics",
+      "agent",
+      "fetch",
+      "lsp_references",
+      "lsp_restart",
+      "sourcegraph",
+      "todos"
+    ]
+  },
+  "providers": {
+    "deepseek": {
+      "api_key": "$DEEPSEEK_API_KEY",
+      "base_url": "https://api.deepseek.com/v1",
+      "models": [
+        {
+          "context_window": 1048576,
+          "default_max_tokens": 384000,
+          "id": "deepseek-pro",
+          "name": "DeepSeek-V4.1-Pro",
+          "reasoning": {
+            "thinking": "toggleable"
+          },
+          "pricing": {
+            "input": 0.435,
+            "output": 0.87,
+            "cache_create": 0.003625
+          }
+        },
+        {
+          "context_window": 1048576,
+          "default_max_tokens": 384000,
+          "id": "deepseek-flash",
+          "name": "DeepSeek-V4.1-Flash",
+          "reasoning": {
+            "thinking": "toggleable"
+          },
+          "pricing": {
+            "input": 0.14,
+            "output": 0.28,
+            "cache_create": 0.0028
+          }
+        }
+      ],
+      "type": "openai-compat"
+    },
+    "lmstudio": {
+      "base_url": "http://vitalijs-pc:1234/v1/",
+      "discover_models": true,
+      "models": [],
+      "name": "LM Studio",
+      "type": "lmstudio"
+    },
+    "ollama": {
+      "base_url": "http://localhost:11434/v1/",
+      "models": [
+        {
+          "context_window": 12000,
+          "default_max_tokens": 124000,
+          "id": "qwen3.5:4b",
+          "name": "Qwen 3 4b"
+        },
+        {
+          "context_window": 12000,
+          "default_max_tokens": 124000,
+          "id": "qwen3.5:latest",
+          "name": "Qwen 3 latest"
+        },
+        {
+          "context_window": 12000,
+          "default_max_tokens": 124000,
+          "id": "gemma4:latest",
+          "name": "Gemma 4"
+        },
+        {
+          "context_window": 12000,
+          "default_max_tokens": 124000,
+          "id": "lfm2.5-thinking:latest",
+          "name": "LFM 2.5 Thinking"
+        },
+        {
+          "context_window": 12000,
+          "id": "LiquidAI/lfm2.5-1.2b-instruct:latest",
+          "name": "LFM 2.5 Instruct"
+        }
+      ],
+      "name": "Ollama",
+      "type": "openai-compat"
+    },
+    "ollama-pc": {
+      "base_url": "http://vitalijs-pc:11434/v1/",
+      "models": [
+        {
+          "context_window": 32768,
+          "default_max_tokens": 32768,
+          "id": "qwen3.5:9b",
+          "name": "Qwen 3.5",
+          "pricing": {
+            "input": 0.6,
+            "output": 1.6
+          },
+          "reasoning": {
+            "thinking": "toggleable"
+          }
+        },
+        {
+          "context_window": 32768,
+          "default_max_tokens": 32768,
+          "id": "gemma4:latest",
+          "name": "Gemma4 ",
+          "reasoning": {
+            "thinking": "toggleable"
+          }
+        },
+        {
+          "context_window": 32768,
+          "default_max_tokens": 32768,
+          "id": "lfm2.5-thinking:latest",
+          "name": "LFM 2.5 Thinking",
+          "reasoning": {
+            "thinking": "toggleable"
+          }
+        },
+        {
+          "context_window": 32768,
+          "default_max_tokens": 32768,
+          "id": "devstral-small-2:latest",
+          "name": "Devstral small",
+          "reasoning": {
+            "thinking": "toggleable"
+          }
+        }
+      ],
+      "name": "Ollama PC",
+      "type": "openai-compat"
+    }
+  }
+}
