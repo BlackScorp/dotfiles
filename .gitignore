@@ -18,3 +18,6 @@ supervise/
 *.orig
 *~
 .DS_Store
+
+# dbus service runtime logs
+.config/service/*/log/
