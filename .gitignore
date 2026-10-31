@@ -22,3 +22,8 @@ supervise/
 *.orig
 *~
 .DS_Store
+
+# Goose: Secrets liegen im Keyring bzw. secrets.yaml, OAuth-Tokens je Provider
+.config/goose/secrets.yaml*
+.config/goose/*_oauth/
+.config/goose/chatgpt_codex/

@@ -50,6 +50,8 @@ nicht Teil des Repos.
 | `.config/xbps.d` | lokales Paket-Repository |
 | `.config/service`, `.config/service-env` | turnstile-Dienste; Laufzeitdaten sind ignoriert |
 | `.config/AGENTS.md` | globale Agent-Regeln (Crush, Claude Code, Codex) |
+| `.config/goose` | Goose: aktiver Provider, Modelle, Extensions, eigener System-Prompt |
+| `.config/keepassxc` | KeepassXC GUI- und Browser-Einstellungen (ohne KeeShare-Key) |
 | `.local/state/noctalia/settings.toml` | Noctalia-Shell: Bar, Widgets, Farben, Wallpaper-Pfade, Plugins |
 
 Noctalia 5 speichert seine Einstellungen nicht unter `~/.config/noctalia`,
@@ -93,6 +95,24 @@ direkt die angegebene Datei.
 - `:qa`: alle Fenster schließen und Neovim beenden.
 
 Lua-Syntaxprüfung: `find .config/nvim -name '*.lua' -exec luajit -b {} /dev/null \;`.
+
+## Secrets
+
+Nichts Geheimes gehört ins Repo. Die einzelnen Stellen:
+
+| Programm | Ablage | Warum nicht im Repo |
+| --- | --- | --- |
+| Shell | `~/.secrets` (chmod 600), gesourct von `.zshrc` und `.profile` | API-Keys wie `DEEPSEEK_API_KEY` |
+| Goose | OS-Keyring, `~/.config/goose/secrets.yaml` | `config.yaml` enthält nur Provider, Modelle, Hosts; OAuth-Token liegen in `chatgpt_codex/`, `*_oauth/` und sind ignoriert |
+| KeepassXC | `~/.config/keepassxc/keepassxc.ini` wird versioniert, aber **ohne** KeeShare-Block | KeepassXC kann keine Werte aus externen Dateien beziehen, der `Own`-PrivateKey muss also in der Datei stehen oder die Datei bleibt draußen |
+| KeepassXC-Datenbank | `~/.passwords.kdbx` | Nicht im Repo, separat übertragen |
+
+Zum KeeShare-Key: Er signiert geteilte Gruppen, ist kein Datenbank-Passwort.
+Da in `keepassxc.ini` kein aktiver Share eingetragen ist (`Active` ist leer),
+wurde `Own=""` gesetzt. Erzeugt KeepassXC den Key bei aktivierter Freigabe neu,
+erscheint das als Änderung in `keepassxc.ini` – dann nicht committen, sondern
+per `git checkout .config/keepassxc/keepassxc.ini` verwerfen oder die
+Freigabe-Funktion bewusst nutzen.
 
 ## Globale Agent-Regeln
 
