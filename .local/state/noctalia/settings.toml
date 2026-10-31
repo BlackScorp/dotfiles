@@ -206,13 +206,13 @@ transition_on_startup = true
     recursive = true
 
     [wallpaper.default]
-    path = "/home/blackscorp/Wallpapers/wallhaven-rq75r7.jpg"
+    path = "/home/blackscorp/Wallpapers/ChatGPT Image 17. Feb. 2026, 21_19_46.png"
 
     [wallpaper.last]
-    path = "/home/blackscorp/Wallpapers/wallhaven-rq75r7.jpg"
+    path = "/home/blackscorp/Wallpapers/ChatGPT Image 17. Feb. 2026, 21_19_46.png"
 
     [wallpaper.monitors.eDP-1]
-    path = "/home/blackscorp/Wallpapers/wallhaven-rq75r7.jpg"
+    path = "/home/blackscorp/Wallpapers/ChatGPT Image 17. Feb. 2026, 21_19_46.png"
 
 [weather]
 enabled = false

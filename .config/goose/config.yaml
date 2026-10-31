@@ -118,6 +118,7 @@ OLLAMA_HOST: http://localhost:11434
 GOOSE_CLI_MIN_PRIORITY: 0.8
 GOOSE_MAX_TURNS: 300
 GOOSE_MODE: auto
+# GOOSE_THINKING_EFFORT: 'off'  # Effort wird pro Session in Zed (ACP thinking_effort) gesetzt
 GOOSE_MOIM_MESSAGE_FILE: /home/blackscorp/.config/AGENTS.md
 providers:
   ollama:
