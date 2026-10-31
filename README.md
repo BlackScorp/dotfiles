@@ -123,7 +123,9 @@ Freigabe-Funktion bewusst nutzen.
 Die gemeinsamen Regeln für Agenten (Crush, Claude Code, Codex) liegen unter
 `.config/AGENTS.md` und werden nach `~/.config/AGENTS.md` verlinkt. Crush liest
 diesen Pfad über `options.global_context_paths` (gesetzt in
-`.config/crush/crush.json`) in allen Projekten. Die Regeln
+`.config/crush/crush.json`) in allen Projekten. Goose liest den Pfad nicht
+selbst, sondern über die Extension `tom` (aktiviert in
+`.config/goose/config.yaml`, Variable `GOOSE_MOIM_MESSAGE_FILE`). Die Regeln
 halten den Kontext klein: erst mit `grep` suchen, `view` mit `limit` und
 `offset` lesen und vollständige Dateien nur bei Bedarf laden.
 

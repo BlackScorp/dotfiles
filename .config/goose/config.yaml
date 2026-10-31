@@ -14,7 +14,7 @@ extensions:
     display_name: Apps
     bundled: true
   tom:
-    enabled: false
+    enabled: true
     type: platform
     name: tom
     description: Inject custom context into every turn via GOOSE_MOIM_MESSAGE_TEXT and GOOSE_MOIM_MESSAGE_FILE environment variables
@@ -118,6 +118,7 @@ OLLAMA_HOST: http://localhost:11434
 GOOSE_CLI_MIN_PRIORITY: 0.8
 GOOSE_MAX_TURNS: 300
 GOOSE_MODE: auto
+GOOSE_MOIM_MESSAGE_FILE: /home/blackscorp/.config/AGENTS.md
 providers:
   ollama:
     enabled: true
