@@ -45,7 +45,8 @@ nicht Teil des Repos.
 | `.config/autostart.sh` | Start durch mango: pipewire, wireplumber, noctalia |
 | `.config/foot`, `.config/tmux`, `.config/nvim` | Terminal, Multiplexer, Editor |
 | `.config/mpv`, `.config/pcmanfm` | Player, Dateimanager |
-| `.config/gtk-3.0`, `.config/gtk-4.0` | GTK-Einstellungen; `gtk.css`/`noctalia*.css` werden von Noctalia erzeugt und sind ignoriert |
+| `.config/gtk-3.0`, `.config/gtk-4.0` | GTK-Einstellungen inkl. der von Noctalia erzeugten `gtk.css`/`noctalia*.css` |
+| `.config/qt5ct`, `.config/qt6ct` | Qt5/Qt6ct inkl. Noctalia-Farbschema |
 | `.config/xdg-desktop-portal`, `-wlr` | Portale (Screenshot/Screencast) |
 | `.config/xbps.d` | lokales Paket-Repository |
 | `.config/service`, `.config/service-env` | turnstile-Dienste; Laufzeitdaten sind ignoriert |
@@ -61,10 +62,11 @@ einzelne Datei verlinkt, damit der übrige State (Plugin-Downloads,
 Benachrichtigungsverlauf, Caches) nicht ins Repo wandert. Noctalia schreibt
 Änderungen direkt in die verlinkte Datei, sie landen also sofort im Repo.
 
-Aus `settings.toml` erzeugt Noctalia generierte Theme-Dateien: `.config/mango/noctalia.conf`,
+Aus `settings.toml` erzeugt Noctalia die Theme-Dateien `.config/mango/noctalia.conf`,
 `.config/gtk-3.0|4.0/gtk.css` + `noctalia*.css` und `qt5ct`/`qt6ct/colors/noctalia.conf`.
-Sie sind per `.gitignore` ausgenommen, weil sie bei jedem Theme-Wechsel neu
-geschrieben werden. `state.toml` im selben Verzeichnis enthält nur Laufzeitzustand
+Sie sind mitversioniert, damit ein frischer Klon sofort das eingestellte Theme hat;
+nach einem Theme-Wechsel in Noctalia erscheinen sie als Diff. `state.toml` im
+selben Verzeichnis enthält nur Laufzeitzustand
 und wird nicht versioniert. Die in `settings.toml` aktivierten Community-Plugins
 müssen auf einem neuen System in Noctalia nachinstalliert werden.
 

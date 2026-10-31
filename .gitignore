@@ -6,14 +6,10 @@ supervise/
 .config/service-env/*
 !.config/service-env/.gitignore
 
-# Von Noctalia erzeugte Theme-Dateien (Quelle: .local/state/noctalia/settings.toml)
-.config/mango/noctalia.conf
-.config/gtk-3.0/gtk.css
-.config/gtk-3.0/noctalia*.css
-.config/gtk-4.0/gtk.css
-.config/gtk-4.0/noctalia*.css
-.config/qt5ct/colors/noctalia.conf
-.config/qt6ct/colors/noctalia.conf
+# Goose: Secrets liegen im Keyring bzw. secrets.yaml, OAuth-Tokens je Provider
+.config/goose/secrets.yaml*
+.config/goose/*_oauth/
+.config/goose/chatgpt_codex/
 
 # Sicherungen und Editor-Muell
 *.bak
@@ -22,8 +18,3 @@ supervise/
 *.orig
 *~
 .DS_Store
-
-# Goose: Secrets liegen im Keyring bzw. secrets.yaml, OAuth-Tokens je Provider
-.config/goose/secrets.yaml*
-.config/goose/*_oauth/
-.config/goose/chatgpt_codex/
