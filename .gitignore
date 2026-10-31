@@ -1,1 +1,21 @@
-supervise
+# turnstile/runit runtime state (created inside the linked service dir)
+supervise/
+.crush/
+
+# Session-Env wird zur Laufzeit von turnstile geschrieben
+.config/service-env/*
+!.config/service-env/.gitignore
+
+# Von Noctalia generierte GTK-Farben
+.config/gtk-3.0/gtk.css
+.config/gtk-3.0/noctalia*.css
+.config/gtk-4.0/gtk.css
+.config/gtk-4.0/noctalia*.css
+
+# Sicherungen und Editor-Muell
+*.bak
+*.bak-*
+*.backup
+*.orig
+*~
+.DS_Store

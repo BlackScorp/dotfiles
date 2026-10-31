@@ -1,0 +1,481 @@
+#!/usr/bin/env bash
+# Annotated, function-based copy of update-packages.
+#
+# How it is structured (only blocks that are either non-trivial or needed in
+# more than one place became functions):
+#   main()             -> entry point, global checks, lock, package loop
+#   require_tools()    -> checks that the external helper programs exist
+#   require_packages() -> validates the package list and their templates
+#   template_version() -> the current version, unquoted and validated
+#   latest_version()   -> newest upstream version reported by update-check
+#   build_package()    -> builds and installs into the local repository
+#   update_package()   -> full per-package flow (check, bump, build, record)
+#   commit_bump()      -> records a successful bump on the package branch
+#   sync_repository()  -> mirror master, rebase the package branch onto it
+#   require_package_branch() -> the guard that keeps commits off master
+#   cleanup()          -> rollback handler bound to EXIT/INT/TERM
+
+# -e: stop on any error, -u: fail on undefined variables,
+# -o pipefail: a failing command inside a pipeline fails the whole pipeline.
+set -euo pipefail
+
+# Packages to keep up to date. Order does not matter.
+packages=(noctalia noctalia-greeter crush mangowc obs goose lightpanda)
+
+# Branch layout used by sync_repository(): upstream is mirrored on
+# $upstream_branch, the package commits live on $package_branch on top of it.
+upstream_branch=${UPSTREAM_BRANCH:-master}
+package_branch=${PACKAGE_BRANCH:-local}
+
+# ---- Configuration --------------------------------------------------------
+
+# Parallel build jobs. xbps-src defaults to nproc, which keeps every core busy
+# at 100%; leaving two cores free keeps the desktop responsive. Override with
+# BUILD_JOBS=<n> (BUILD_JOBS=0 disables the -j flag and restores the default).
+compute_build_jobs() {
+    local cpus
+    if [[ -n ${BUILD_JOBS:-} ]]; then
+        printf '%s\n' "$BUILD_JOBS"
+        return
+    fi
+    cpus=$(nproc --all 2>/dev/null || getconf _NPROCESSORS_ONLN) || cpus=1
+    ((cpus > 2)) || cpus=2
+    printf '%s\n' "$((cpus - 2))"
+}
+
+# ---- Validation -----------------------------------------------------------
+
+# The tools used below must be installed; print a hint for the missing one.
+require_tools() {
+    local tool
+    for tool in xgensum xbps-uhelper sed mktemp; do
+        command -v "$tool" >/dev/null || {
+            printf 'Missing tool: %s (xgensum is provided by the xtools package).\n' "$tool" >&2
+            return 1
+        }
+    done
+}
+
+require_packages() {
+    local package
+    # An empty array would make the main loop do nothing, so fail loudly.
+    ((${#packages[@]})) || { printf 'The package list is empty.\n' >&2; return 1; }
+
+    for package in "${packages[@]}"; do
+        # The name must be a safe package identifier (no slashes, spaces or ..)
+        # and a template file must exist for it.
+        [[ $package =~ ^[a-zA-Z0-9][a-zA-Z0-9+._-]*$ && -f srcpkgs/$package/template ]] || {
+            printf 'Invalid package or missing template: %s\n' "$package" >&2
+            return 1
+        }
+    done
+}
+
+# ---- Template inspection --------------------------------------------------
+
+# Reads the current version and fails unless it is defined exactly once and
+# looks like a plain numeric version, which the comparison below requires.
+template_version() {
+    local template=$1
+    local -a versions=() revisions=()
+
+    # mapfile collects every match so we can detect duplicates.
+    # (sed: print only the text after "version=".)
+    mapfile -t versions < <(sed -n 's/^version=//p' "$template")
+    mapfile -t revisions < <(sed -n '/^revision=/p' "$template")
+    [[ ${#versions[@]} -eq 1 && ${#revisions[@]} -eq 1 ]] || {
+        printf 'Version or revision is not uniquely defined: %s\n' "$template" >&2
+        return 1
+    }
+
+    # Strip optional single or double quotes around the version string.
+    local version=${versions[0]}
+    version=${version#\"}; version=${version%\"}
+    version=${version#\'}; version=${version%\'}
+    [[ $version =~ ^[0-9][a-zA-Z0-9.+]*$ ]] || {
+        printf 'Unsupported version line: %s\n' "$template" >&2
+        return 1
+    }
+
+    printf '%s\n' "$version"
+}
+
+# Asks xbps-src which versions upstream offers and returns the newest one.
+# Falls back to the current version when nothing newer is found.
+# Lines of update-check look like "pkg-1.2.3 -> pkg-1.2.4".
+latest_version() {
+    local package=$1 current=$2
+    local updates latest=$current prefix line candidate comparison
+
+    updates=$(./xbps-src update-check "$package")
+    prefix="$package-$current -> $package-"
+
+    while IFS= read -r line; do
+        # Ignore lines that do not describe this package's current version.
+        [[ $line == "$prefix"* ]] || continue
+        candidate=${line#"$prefix"}
+        # Upstream tarballs often use dashes/underscores instead of dots in the
+        # version number; normalise them so cmpver can compare the values.
+        candidate=${candidate//-/.}
+        candidate=${candidate//_/.}
+        [[ $candidate =~ ^[0-9][a-zA-Z0-9.+]*$ ]] || continue
+
+        # xbps-uhelper cmpver exit codes: 0 = candidate older or equal,
+        # 1 = candidate newer, 255 = versions not comparable.
+        if xbps-uhelper cmpver "${candidate}_1" "${latest}_1" >/dev/null; then
+            continue
+        else
+            comparison=$?
+            case $comparison in
+                1) latest=$candidate ;;
+                255) ;;  # not comparable, keep the previous candidate
+                *)
+                    printf 'Version comparison failed.\n' >&2
+                    return 1
+                    ;;
+            esac
+        fi
+    done <<< "$updates"
+
+    printf '%s\n' "$latest"
+}
+
+# Build the package into the local repository. The building flag lets the
+# cleanup handler remove autodeps if the build is interrupted. The build status
+# is captured explicitly because a failing command inside a function does not
+# abort it the way "set -e" would at the top level.
+#
+# Parallelism: xbps-src forwards "-j<XBPS_MAKEJOBS>" to make/go/cargo; without
+# the flag it uses every core. compute_build_jobs() keeps two cores free unless
+# BUILD_JOBS overrides it (BUILD_JOBS=0 leaves the decision to xbps-src).
+#
+# Only binaries are wanted here, so the default drops autodeps and builddirs
+# after every package. KEEP_ALL=1 is an optional escape hatch for debugging a
+# failed build (maps to xbps-src "-C", keeps sources and autodeps around);
+# it is not needed for normal use.
+build_package() {
+    local status jobs=() keep=() count
+    building=1
+    status=0
+    count=$(compute_build_jobs)
+    [[ $count == 0 ]] || jobs=(-j "$count")
+    # Optional escape hatch: KEEP_ALL=1 maps to xbps-src "-C" and keeps
+    # builddir, destdir and autodeps (debugging only).
+    if [[ ${KEEP_ALL:-0} == 1 ]]; then
+        keep=(-C)
+    fi
+    ./xbps-src "${jobs[@]}" "${keep[@]}" pkg "$1" || status=$?
+    # Autodeps are dropped after each package so the chroot stays small; with
+    # "-C" xbps-src keeps them, so the explicit cleanup is skipped then.
+    if [[ ${KEEP_ALL:-0} == 1 ]]; then
+        :
+    else
+        ./xbps-src remove-autodeps || ((status)) || status=$?
+    fi
+    building=0
+    return "$status"
+}
+
+# ---- Branch guard ---------------------------------------------------------
+
+# master mirrors upstream and must never carry commits of its own, so every
+# operation that writes to the checkout is gated on the package branch. This is
+# a hard failure on purpose: a warning would let the build loop run on master and
+# put a version bump where it does not belong.
+require_package_branch() {
+    local branch
+
+    branch=$(git rev-parse --abbrev-ref HEAD) || return 1
+    if [[ $branch != "$package_branch" ]]; then
+        printf 'Refusing to update packages on branch "%s"; "%s" is expected.\n' \
+            "$branch" "$package_branch" >&2
+        printf 'Switch to it with: git -C %s switch %s\n' "$PWD" "$package_branch" >&2
+        return 1
+    fi
+    return 0
+}
+
+# ---- Repository update ----------------------------------------------------
+
+# Brings the checkout up to date before any package is inspected. The model is
+# strictly one-directional:
+#
+#   master - untouched mirror of upstream, only ever fast-forwarded
+#   local  - the package commits, always rebased on top of master
+#
+# Nothing is pulled into the package branch and nothing is merged. The package
+# stack is lifted off, the new upstream state is put underneath, the stack goes
+# back on top. That is also what keeps old upstream packages from surviving next
+# to the local ones: the later commit simply wins.
+#
+# Uncommitted work (an interrupted version bump, a hand-edited template) is
+# stashed around the rebase and restored afterwards. Returns 2 when the rebase or
+# the restore needs a manual fix, so main() can stop before building against a
+# half-updated tree; 0 otherwise.
+sync_repository() {
+    local stashed=0
+
+    # Without git or without a connected remote there is nothing to fetch.
+    if ! command -v git >/dev/null || [[ -z $(git remote) ]]; then
+        printf 'Skipping repository update (no git remote).\n'
+        return 0
+    fi
+
+    if ((stash_before)); then
+        return 0
+    fi
+
+    # Only tracked modifications are stashed. A new package stays untracked until
+    # it is committed, and hiding it from the loop below would look like a
+    # missing template.
+    if [[ -n $(git status --porcelain --untracked-files=no) ]]; then
+        if git stash push -m "update-packages $(date +%Y-%m-%d_%H:%M:%S)"; then
+            stashed=1
+        else
+            printf 'Warning: local changes could not be stashed, skipping update.\n' >&2
+            return 0
+        fi
+    fi
+
+    if ! git fetch --quiet origin "$upstream_branch"; then
+        printf 'Warning: fetching %s failed, continuing with the local state.\n' \
+            "$upstream_branch" >&2
+        restore_stash "$stashed" || return 2
+        return 0
+    fi
+
+    # Keep the local mirror current too. A refspec without a leading "+" is
+    # refused when it would not be a fast-forward, so master can never silently
+    # receive commits of its own; if it is checked out elsewhere the rebase below
+    # still uses the freshly fetched remote ref.
+    git fetch --quiet . "origin/$upstream_branch:$upstream_branch" 2>/dev/null || :
+
+    if ! git rebase "origin/$upstream_branch"; then
+        # Leave the checkout in a well-defined state: abandon the half-applied
+        # rebase, keep the package commits where they were and keep the stashed
+        # work in the stash.
+        git rebase --abort || :
+        printf 'Rebase onto origin/%s failed; the package commits are unchanged.\n' \
+            "$upstream_branch" >&2
+        printf 'Resolve it by hand with:\n  cd %s && git rebase origin/%s && git stash pop\n' \
+            "$PWD" "$upstream_branch" >&2
+        return 2
+    fi
+
+    restore_stash "$stashed" || return 2
+    return 0
+}
+
+# Puts stashed work back after the rebase. A conflict here means the stash was
+# taken from a tree that upstream has changed in the meantime; the entry is kept
+# so nothing is lost.
+restore_stash() {
+    local stashed=$1 status=0
+
+    ((stashed)) || return 0
+    # stash pop merges the changes back and drops the entry when it succeeds.
+    git stash pop >/dev/null || status=$?
+    if ((status)); then
+        printf 'Conflicts while restoring local changes; the stash entry is kept.\n' >&2
+        printf 'Resolve them with:\n  cd %s && git status && git stash list\n' "$PWD" >&2
+        return 1
+    fi
+    return 0
+}
+
+# Records a successful bump as one commit on the package branch. Doing this here
+# is what turns the next run into a plain rebase: the bump travels up with the
+# package stack instead of being stashed and replayed by hand. Only the files of
+# this one package are added, so unrelated edits in the tree stay untouched.
+commit_bump() {
+    local package=$1 version=$2 status=0
+
+    require_package_branch || return 1
+
+    git add -- "srcpkgs/$package" || return 1
+    if git diff --cached --quiet -- "srcpkgs/$package"; then
+        printf '%s: template unchanged, nothing to record.\n' "$package"
+        return 0
+    fi
+
+    git commit --quiet -m "$package: update to $version" -- "srcpkgs/$package" || status=$?
+    if ((status)); then
+        printf 'Warning: could not commit the bump for %s.\n' "$package" >&2
+        return 1
+    fi
+    printf '%s: bump recorded as "%s: update to %s".\n' "$package" "$package" "$version"
+    return 0
+}
+
+# Reminds that the local stack has commits the fork does not have yet, which is
+# the only copy of it besides the local disk.
+report_unpushed() {
+    local upstream ahead
+
+    upstream=$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null) || return 0
+    ahead=$(git rev-list --count '@{upstream}..HEAD' 2>/dev/null) || return 0
+    ((ahead)) || return 0
+    printf '%d commit(s) not on %s yet; publish with: git push %s %s\n' \
+        "$ahead" "$upstream" "${upstream%%/*}" "${upstream#*/}"
+}
+
+# Offers to clone void-packages when the checkout is missing. Only an
+# interactive terminal can answer, so a non-interactive run just fails.
+clone_void_packages() {
+    local dir=$1 answer
+
+    [[ -t 0 ]] || {
+        printf 'xbps-src is missing in %s\n' "$dir" >&2
+        return 1
+    }
+
+    printf 'void-packages was not found in %s.\n' "$dir"
+    read -r -p 'Clone https://github.com/void-linux/void-packages.git there? [y/N] ' answer || answer=
+    [[ $answer == [yY] || $answer == [yY][eE][sS] ]] || {
+        printf 'Keeping the existing checkout untouched.\n' >&2
+        return 1
+    }
+
+    command -v git >/dev/null || { printf 'Missing tool: git\n' >&2; return 1; }
+    git clone --depth 1 https://github.com/void-linux/void-packages.git "$dir" || {
+        printf 'Clone failed.\n' >&2
+        return 1
+    }
+    # The bootstrap is required on a fresh checkout before anything can be built.
+    printf 'Initialising the xbps-src bootstrap (takes a few minutes) ...\n'
+    ("$dir/xbps-src" binary-bootstrap) || {
+        printf 'binary-bootstrap failed; see %s/README.md.\n' "$dir" >&2
+        return 1
+    }
+}
+
+# ---- Rollback -------------------------------------------------------------
+
+# backup:   temp file holding the pristine template (set while it is modified)
+# template: currently processed template path
+# building:    1 while a package build is in progress
+# stash_before: 1 once the repository sync has run (avoids running it twice)
+backup=
+template=
+building=0
+stash_before=0
+
+# Bound to EXIT, so it runs on success, on error and on signals.
+cleanup() {
+    local status=$?
+    # Drop the handler first so the exit at the end cannot recurse.
+    trap - EXIT
+    # Template was modified but the build did not finish: restore the backup.
+    if [[ -n $backup ]]; then
+        cp -- "$backup" "$template" || status=1
+        rm -f -- "$backup"
+    fi
+    # A build was interrupted: remove the autodeps it registered.
+    if ((building)); then
+        ./xbps-src remove-autodeps || status=1
+    fi
+    exit "$status"
+}
+
+# ---- Per package flow -----------------------------------------------------
+
+# Returns 0 when the package was rebuilt, 1 when it was already up to date.
+# Every command whose failure must abort the run is checked explicitly: inside
+# a function, "set -e" is not enough to propagate the error to the caller.
+update_package() {
+    local package=$1 current latest
+
+    # srcpkgs/<pkg>/template inside the void-packages checkout.
+    template=srcpkgs/$package/template
+    current=$(template_version "$template") || return 2
+
+    printf 'Checking %s (%s) ...\n' "$package" "$current"
+
+    latest=$(latest_version "$package" "$current") || return 2
+    if [[ $latest == "$current" ]]; then
+        printf '%s: No newer version found.\n' "$package"
+        return 1
+    fi
+
+    printf '%s: %s -> %s\n' "$package" "$current" "$latest"
+
+    # Keep a copy of the untouched template; cleanup restores it if anything
+    # fails from here on.
+    backup=$(mktemp)
+    cp -- "$template" "$backup"
+
+    # Bump the version, reset the revision to 1, then refresh the checksums.
+    sed -i "s/^version=.*/version=$latest/; s/^revision=.*/revision=1/" "$template" || return 2
+    xgensum -i "$package" || return 2
+
+    # Keep the original template until the build has completed successfully.
+    build_package "$package" || return 2
+
+    # Record the bump now that the build proved it correct. If the commit fails
+    # the package is already built, so the bumped template is kept instead of
+    # letting cleanup() roll it back; it is then simply left uncommitted.
+    if ! commit_bump "$package" "$latest"; then
+        rm -f -- "$backup"
+        backup=
+        return 2
+    fi
+
+    rm -f -- "$backup"
+    backup=
+    return 0
+}
+
+# ---- Entry point ----------------------------------------------------------
+
+main() {
+    local dir package built=0 status
+
+    # Location of the void-packages checkout; can be overridden through the
+    # VOID_PACKAGES_DIR environment variable.
+    dir=${VOID_PACKAGES_DIR:-"$HOME/void-packages"}
+
+    # A missing checkout is offered as a fresh clone and bootstrap.
+    if [[ ! -x $dir/xbps-src ]]; then
+        clone_void_packages "$dir" || return 1
+    fi
+
+    # All following commands run relative to the void-packages checkout.
+    cd "$dir"
+
+    # Open file descriptor 9 on the directory itself and take a non-blocking
+    # exclusive lock (flock). The lock vanishes when the script exits, so two
+    # concurrent update runs cannot clobber each other.
+    exec 9< .
+    flock -n 9 || { printf 'Another package update is already running.\n' >&2; return 1; }
+
+    # Never write to master: the guard runs before the sync touches anything.
+    require_package_branch || return 1
+
+    # Fetch upstream first, then validate against the fresh tree.
+    status=0
+    sync_repository || status=$?
+    ((status)) && return 1
+    stash_before=1
+
+    require_packages || return 1
+    require_tools || return 1
+
+    for package in "${packages[@]}"; do
+        status=0
+        update_package "$package" || status=$?
+        case $status in
+            0) built=$((built + 1)) ;;
+            1) ;;  # nothing to do
+            *) return 1 ;;
+        esac
+    done
+
+    printf '%s package(s) built. New versions are available in the configured repository.\n' "$built"
+    report_unpushed
+}
+
+trap cleanup EXIT
+trap 'exit 130' INT   # Ctrl-C: cleanup runs via EXIT, exit code 128+2
+trap 'exit 143' TERM  # SIGTERM: cleanup runs via EXIT, exit code 128+15
+
+main "$@"

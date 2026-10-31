@@ -1,0 +1,5 @@
+[user]
+	name = BlackScorp
+	email = cccpmik@gmail.com
+[pull]
+	rebase = true
