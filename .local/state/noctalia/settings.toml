@@ -1,0 +1,255 @@
+config_version = 16
+
+[bar.default]
+background_opacity = 0.39999999105930328
+capsule = true
+capsule_border = "primary"
+capsule_radius = 4
+concave_edge_corners = false
+end = [ "group:g4", "group:g2", "group:g1", "tray", "group:g3", "control-center", "group:g6" ]
+font_family = "Noto Sans"
+font_scale = 1.1999999806284904
+margin_ends = 0
+panel_overlap = 0
+radius = 0
+scale = 1.2000000104308128
+shadow = false
+start = [ "taskbar", "group:g5", "media" ]
+thickness = 42
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    border = "primary"
+    border_width = 1.0
+    enabled = true
+    fill = "surface_container"
+    id = "g5"
+    members = [ "bar", "bar_2", "widget", "notes", "badge" ]
+    opacity = 1.0
+    padding = 6.0
+    radius = 4.0
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    border = "primary"
+    border_width = 1.0
+    enabled = true
+    fill = "surface_container"
+    id = "g1"
+    members = [ "brightness", "volume", "battery" ]
+    opacity = 1.0
+    padding = 6.0
+    radius = 4.0
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    border = "primary"
+    border_width = 1.0
+    enabled = true
+    fill = "surface_container"
+    id = "g2"
+    members = [ "network", "bluetooth" ]
+    opacity = 1.0
+    padding = 6.0
+    radius = 4.0
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    border = "primary"
+    border_width = 1.0
+    enabled = true
+    fill = "surface_container"
+    id = "g3"
+    members = [ "notifications", "clipboard" ]
+    opacity = 1.0
+    padding = 6.0
+    radius = 4.0
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    border = "primary"
+    border_width = 1.0
+    enabled = true
+    fill = "surface_container"
+    id = "g4"
+    members = [ "cpu", "ram" ]
+    opacity = 1.0
+    padding = 6.0
+    radius = 4.0
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    border = ""
+    border_width = 1.0
+    enabled = true
+    fill = "error"
+    id = "g6"
+    members = [ "session" ]
+    opacity = 1.0
+    padding = 6.0
+    radius = 4.0
+
+[calendar]
+enabled = true
+
+    [calendar.account.personal_google_2]
+    color = "primary"
+    name = "Google Termine"
+    type = "google"
+
+[desktop_widgets]
+schema_version = 2
+widget_order = []
+
+    [desktop_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [desktop_widgets.widget]
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [ "lockscreen-login-box@eDP-1" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 960.0
+    cy = 898.0
+    output = "eDP-1"
+    placement_height = 1080.0
+    placement_width = 1920.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
+        background_color = "surface_container"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[plugin_settings."davinci13/containers"]
+panel_layer = "overlay"
+panel_placement = "floating"
+panel_position = "center"
+show_host_services = false
+view_mode = "cards"
+
+[plugin_settings."nilsonlinux/rss-notifier"]
+Panel_layer = "overlay"
+Panel_placement = "floating"
+Panel_position = "center"
+
+[plugin_settings."yuuto/calculator"]
+panel_layer = "overlay"
+panel_open_near_click = false
+panel_placement = "floating"
+panel_position = "center"
+
+[plugins]
+enabled = [
+    "yuuto/calculator",
+    "oldirtty/color_picker",
+    "davinci13/containers",
+    "noctalia/notes",
+    "baizhu/paged-todo",
+    "nilsonlinux/rss-notifier",
+    "tmelik/system-monitor"
+]
+
+[shell]
+font_family = "Noto Sans"
+
+    [shell.screenshot]
+    directory = "/home/blackscorp/Pictures/Screenshots"
+    show_cursor = true
+
+[theme]
+builtin = "Ayu"
+community_palette = "Breeze"
+mode = "dark"
+source = "community"
+wallpaper_scheme = "soft"
+
+    [theme.templates]
+    builtin_ids = [ "gtk3", "gtk4", "mango", "qt", "umbriel" ]
+
+[wallpaper]
+directory = "/home/blackscorp/Wallpapers"
+transition_on_startup = true
+
+    [wallpaper.automation]
+    enabled = true
+    recursive = true
+
+    [wallpaper.default]
+    path = "/home/blackscorp/Wallpapers/wallhaven-qr327r.png"
+
+    [wallpaper.last]
+    path = "/home/blackscorp/Wallpapers/wallhaven-qr327r.png"
+
+    [wallpaper.monitors.eDP-1]
+    path = "/home/blackscorp/Wallpapers/wallhaven-qr327r.png"
+
+[weather]
+enabled = false
+
+[widget.badge]
+type = "nilsonlinux/rss-notifier:badge"
+
+[widget.bar]
+type = "yuuto/calculator:bar"
+
+[widget.bar_2]
+type = "davinci13/containers:bar"
+
+[widget.control-center]
+glyph = "person"
+
+[widget.media]
+hide_when_no_media = true
+
+[widget.network]
+show_label = false
+
+[widget.notes]
+type = "noctalia/notes:notes"
+
+[widget.notifications]
+hide_when_no_unread = true
+
+[widget.taskbar]
+group_by_workspace = true
+hide_empty_workspaces = true
+icon_scale = 1.5
+show_workspace_label = false
+
+[widget.widget]
+type = "oldirtty/color_picker:widget"
+
+[widget.workspaces]
+hide_when_empty = true
+scale = 1.1000000000000001

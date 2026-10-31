@@ -19,7 +19,7 @@ DO_BACKUP=1
 ERRORS=0
 
 # Wird nicht verlinkt: Repo-Verwaltung, Laufzeitdaten, Skripte ohne Punkt.
-SKIP_TOP=(.git .gitignore .crush install.sh README.md LICENSE update-packages)
+SKIP_TOP=(.git .gitignore .crush .config .local install.sh README.md LICENSE update-packages)
 
 usage() {
     sed -n '2,10p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
@@ -118,6 +118,13 @@ for src in "$REPO_DIR/.config"/* "$REPO_DIR/.config"/.[!.]*; do
     [ -e "$src" ] || continue
     link "$src" "$CONFIG_DIR/$(basename -- "$src")"
 done
+
+# Dateien aus .local/ (z.B. Noctalia-State) einzeln nach ~/.local spiegeln
+if [ -d "$REPO_DIR/.local" ]; then
+    while IFS= read -r -d '' src; do
+        link "$src" "$HOME/.local/${src#"$REPO_DIR/.local/"}"
+    done < <(find "$REPO_DIR/.local" \( -type f -o -type l \) -print0 | sort -z)
+fi
 
 prune_dangling
 

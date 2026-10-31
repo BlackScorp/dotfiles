@@ -12,8 +12,9 @@ cd ~/dotfiles
 ./install.sh
 ```
 
-`install.sh` verlinkt jede Dot-Datei im Wurzelverzeichnis nach `~` und jeden
-Eintrag aus `.config/` nach `~/.config/<name>`. Echte Dateien und Verzeichnisse,
+`install.sh` verlinkt jede Dot-Datei im Wurzelverzeichnis nach `~`, jeden
+Eintrag aus `.config/` nach `~/.config/<name>` und jede Datei aus `.local/`
+nach `~/.local/<pfad>`. Echte Dateien und Verzeichnisse,
 die dort schon liegen, werden vorher nach
 `~/.dotfiles-backup-<zeitstempel>/` verschoben. Tote Symlinks, die noch in
 dieses Repo zeigen, werden entfernt. Das Skript ist idempotent und kann jederzeit
@@ -49,6 +50,21 @@ nicht Teil des Repos.
 | `.config/xbps.d` | lokales Paket-Repository |
 | `.config/service`, `.config/service-env` | turnstile-Dienste; Laufzeitdaten sind ignoriert |
 | `.config/AGENTS.md` | globale Agent-Regeln (Crush, Claude Code, Codex) |
+| `.local/state/noctalia/settings.toml` | Noctalia-Shell: Bar, Widgets, Farben, Wallpaper-Pfade, Plugins |
+
+Noctalia 5 speichert seine Einstellungen nicht unter `~/.config/noctalia`,
+sondern in `$XDG_STATE_HOME/noctalia/settings.toml`. Diese Datei ist die
+Wahrheit für Bar-Layout, Widgets, Theme/Palette und Wallpaper-Pfade; sie wird als
+einzelne Datei verlinkt, damit der übrige State (Plugin-Downloads,
+Benachrichtigungsverlauf, Caches) nicht ins Repo wandert. Noctalia schreibt
+Änderungen direkt in die verlinkte Datei, sie landen also sofort im Repo.
+
+Aus `settings.toml` erzeugt Noctalia generierte Theme-Dateien: `.config/mango/noctalia.conf`,
+`.config/gtk-3.0|4.0/gtk.css` + `noctalia*.css` und `qt5ct`/`qt6ct/colors/noctalia.conf`.
+Sie sind per `.gitignore` ausgenommen, weil sie bei jedem Theme-Wechsel neu
+geschrieben werden. `state.toml` im selben Verzeichnis enthält nur Laufzeitzustand
+und wird nicht versioniert. Die in `settings.toml` aktivierten Community-Plugins
+müssen auf einem neuen System in Noctalia nachinstalliert werden.
 
 Nicht mehr enthalten und bewusst entfernt: `eww`, `sway`, `swww` (nicht mehr
 installiert; mango + noctalia übernehmen Fensterverwaltung, Panel und

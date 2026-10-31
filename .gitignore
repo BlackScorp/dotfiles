@@ -6,11 +6,14 @@ supervise/
 .config/service-env/*
 !.config/service-env/.gitignore
 
-# Von Noctalia generierte GTK-Farben
+# Von Noctalia erzeugte Theme-Dateien (Quelle: .local/state/noctalia/settings.toml)
+.config/mango/noctalia.conf
 .config/gtk-3.0/gtk.css
 .config/gtk-3.0/noctalia*.css
 .config/gtk-4.0/gtk.css
 .config/gtk-4.0/noctalia*.css
+.config/qt5ct/colors/noctalia.conf
+.config/qt6ct/colors/noctalia.conf
 
 # Sicherungen und Editor-Muell
 *.bak
