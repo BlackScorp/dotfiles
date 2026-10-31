@@ -14,3 +14,6 @@ export PATH="$PATH:$HOME/.lmstudio/bin:$HOME/.dotnet"
 
 # API keys and other secrets live outside the repo (~/.secrets, chmod 600)
 [ -r "$HOME/.secrets" ] && . "$HOME/.secrets"
+
+# goose: run shell tool commands with zsh
+export GOOSE_SHELL=/usr/sbin/zsh
