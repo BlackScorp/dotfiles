@@ -8,6 +8,5 @@ source ~/.rc
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 
-# LM Studio CLI
-export DOTNET_ROOT="$HOME/.dotnet"
+# LM Studio CLI (DOTNET_ROOT/PATH für .NET setzt ~/.profile)
 export PATH="$PATH:$HOME/.lmstudio/bin:$DOTNET_ROOT"

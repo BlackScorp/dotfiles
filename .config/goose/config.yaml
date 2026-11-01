@@ -1,4 +1,14 @@
 extensions:
+  blender:
+    enabled: true
+    type: stdio
+    name: blender
+    description: Control Blender via MCP - create 3D models, scenes, materials, and run Python
+    cmd: /home/blackscorp/.local/bin/uvx
+    args:
+      - mcp-for-blender
+    envs: {}
+    env_keys: []
   extensionmanager:
     enabled: true
     type: platform

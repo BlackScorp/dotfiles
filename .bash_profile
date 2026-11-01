@@ -1,5 +1,6 @@
 # .bash_profile
-export PATH="$HOME/.local/bin:$PATH"
+# ~/.profile setzt PATH (inkl. ~/.dotnet) und DOTNET_ROOT
+[ -f "$HOME/.profile" ] && . "$HOME/.profile"
 
 # Get the aliases and functions
 [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"

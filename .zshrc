@@ -11,7 +11,6 @@ source ~/.rc
 
 export QT_QPA_PLATFORMTHEME=qt5ct
 export PATH="$PATH:$HOME/.lmstudio/bin:$HOME/.dotnet"
-
 # API keys and other secrets live outside the repo (~/.secrets, chmod 600)
 [ -r "$HOME/.secrets" ] && . "$HOME/.secrets"
 

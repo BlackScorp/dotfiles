@@ -117,12 +117,40 @@ widget_order = []
 [lockscreen_widgets]
 enabled = false
 schema_version = 2
-widget_order = [ "lockscreen-login-box@eDP-1" ]
+widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-login-box@DP-2" ]
 
     [lockscreen_widgets.grid]
     cell_size = 16
     major_interval = 4
     visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-2"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 960.0
+    cy = 898.0
+    output = "DP-2"
+    placement_height = 1080.0
+    placement_width = 1920.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-2".settings]
+        background_color = "surface_container"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
 
     [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
     box_height = 196.0
@@ -147,6 +175,7 @@ widget_order = [ "lockscreen-login-box@eDP-1" ]
         show_keyboard_layout = true
         show_login_button = true
         show_media = true
+        show_password_reveal = true
         show_session_buttons = true
         show_unlock_hint = true
         show_weather = true
@@ -184,6 +213,7 @@ enabled = [
 font_family = "Noto Sans"
 
     [shell.screenshot]
+    annotate = true
     directory = "/home/blackscorp/Pictures/Screenshots"
     show_cursor = true
 
@@ -206,13 +236,16 @@ transition_on_startup = true
     recursive = true
 
     [wallpaper.default]
-    path = "/home/blackscorp/Wallpapers/ChatGPT Image 17. Feb. 2026, 21_19_46.png"
+    path = "/home/blackscorp/Wallpapers/wallhaven-zx93pv.jpg"
 
     [wallpaper.last]
-    path = "/home/blackscorp/Wallpapers/ChatGPT Image 17. Feb. 2026, 21_19_46.png"
+    path = "/home/blackscorp/Wallpapers/wallhaven-zx93pv.jpg"
+
+    [wallpaper.monitors.DP-2]
+    path = "/home/blackscorp/Wallpapers/wallhaven-zx93pv.jpg"
 
     [wallpaper.monitors.eDP-1]
-    path = "/home/blackscorp/Wallpapers/ChatGPT Image 17. Feb. 2026, 21_19_46.png"
+    path = "/home/blackscorp/Wallpapers/wallhaven-zx93pv.jpg"
 
 [weather]
 enabled = false
