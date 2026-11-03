@@ -95,6 +95,12 @@ thickness = 42
     padding = 6.0
     radius = 4.0
 
+[battery.device."/org/freedesktop/UPower/devices/battery_hid_dco2co26o26obdo25_battery"]
+warning_threshold = 10
+
+[battery.device."/org/freedesktop/UPower/devices/battery_hidpp_battery_0"]
+warning_threshold = 10
+
 [calendar]
 enabled = true
 
@@ -211,6 +217,7 @@ enabled = [
 
 [shell]
 font_family = "Noto Sans"
+screen_time_enabled = true
 
     [shell.screenshot]
     annotate = true
@@ -236,16 +243,16 @@ transition_on_startup = true
     recursive = true
 
     [wallpaper.default]
-    path = "/home/blackscorp/Wallpapers/wallhaven-zx93pv.jpg"
+    path = "/home/blackscorp/Wallpapers/wallhaven-zpv8mj.png"
 
     [wallpaper.last]
-    path = "/home/blackscorp/Wallpapers/wallhaven-zx93pv.jpg"
+    path = "/home/blackscorp/Wallpapers/wallhaven-zpv8mj.png"
 
     [wallpaper.monitors.DP-2]
-    path = "/home/blackscorp/Wallpapers/wallhaven-zx93pv.jpg"
+    path = "/home/blackscorp/Wallpapers/wallhaven-nr8dmq.jpg"
 
     [wallpaper.monitors.eDP-1]
-    path = "/home/blackscorp/Wallpapers/wallhaven-zx93pv.jpg"
+    path = "/home/blackscorp/Wallpapers/wallhaven-zpv8mj.png"
 
 [weather]
 enabled = false
@@ -276,6 +283,7 @@ hide_when_no_unread = true
 
 [widget.taskbar]
 group_by_workspace = true
+group_single_icon_per_app = true
 hide_empty_workspaces = true
 icon_scale = 1.5
 show_workspace_label = false
